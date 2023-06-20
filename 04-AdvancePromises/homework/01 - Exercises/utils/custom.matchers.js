@@ -19,15 +19,15 @@ var customMatchers = {
         expect(true).toBe(true); // hack to supress missing expectations warning
         // check if promise fulfills with expected value, call `done` if so.
         promise
-        .then(function (actualValue) {
-          if (util.equals(actualValue, expectedValue, customTesters)) {
-            done();
-          } else {
-            done.fail('Expected promise to fulfill with ' + jasmine.pp(expectedValue) + ' but fulfilled with ' + jasmine.pp(actualValue) + '.');
-          }
-        }, function (err) {
-          done.fail('Expected promise to fulfill, but instead rejected with ' + jasmine.pp(err) + '.');
-        });
+          .then(function (actualValue) {
+            if (util.equals(actualValue, expectedValue, customTesters)) {
+              done();
+            } else {
+              done.fail('Expected promise to fulfill with ' + jasmine.pp(expectedValue) + ' but fulfilled with ' + jasmine.pp(actualValue) + '.');
+            }
+          }, function (err) {
+            done.fail('Expected promise to fulfill, but instead rejected with ' + jasmine.pp(err) + '.');
+          });
         // necessary part of the matcher API.
         return { pass: true };
       },
@@ -46,15 +46,15 @@ var customMatchers = {
         expect(true).toBe(true); // hack to supress missing expectations warning
         // check if promise rejects with expected value, call `done` if so.
         promise
-        .then(function (val) {
-          done.fail('Expected promise to reject, but instead fulfilled with ' + jasmine.pp(val) + '.');
-        }, function (actualReason) {
-          if (util.equals(actualReason, expectedReason, customTesters)) {
-            done();
-          } else {
-            done.fail('Expected promise to reject with ' + jasmine.pp(expectedReason) + ' but rejected with ' + jasmine.pp(actualReason) + '.');
-          }
-        });
+          .then(function (val) {
+            done.fail('Expected promise to reject, but instead fulfilled with ' + jasmine.pp(val) + '.');
+          }, function (actualReason) {
+            if (util.equals(actualReason, expectedReason, customTesters)) {
+              done();
+            } else {
+              done.fail('Expected promise to reject with ' + jasmine.pp(expectedReason) + ' but rejected with ' + jasmine.pp(actualReason) + '.');
+            }
+          });
         // necessary part of the matcher API.
         return { pass: true };
       },
@@ -65,3 +65,16 @@ var customMatchers = {
   }
 
 };
+
+
+function readJSON(filename) {
+  return new Promise(function (fulfill, reject) {
+    readFile(filename, 'utf8').done(function (res) {
+      try {
+        fulfill(JSON.parse(res));
+      } catch (ex) {
+        reject(ex);
+      }
+    }, reject);
+  });
+}
